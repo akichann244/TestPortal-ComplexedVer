@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社内ポータル - 完全修正版</title>
+    <style>
+        /* 全体のスタイル設定 */
+        body {
+            font-family: 'Segoe UI', Meiryo, sans-serif;
+            margin: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        header {
+            background-color: #004a87;
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        /* サイドバー */
+        nav {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            height: fit-content;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav li {
+            margin-bottom: 15px;
+        }
+
+        /* hrefなしでも確実にボタンとして機能させ、青くホバーさせる設定 */
+        nav a {
+            text-decoration: none;
+            color: #004a87;
+            font-weight: bold;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer; /* マウスを載せた時に確実に指マークにする */
+            user-select: none;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: #e7f3ff;
+            color: #004a87;
+        }
+
+        /* メインコンテンツ */
+        main {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            min-height: 500px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            border-left: 5px solid #004a87;
+            padding-left: 10px;
+            margin-bottom: 20px;
+            margin-top: 0;
+        }
+
+        .doc-link {
+            display: inline-block;
+            margin: 8px 0;
+            color: #d32f2f;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .doc-link:hover {
+            text-decoration: underline;
+        }
+
+        .info-box {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+
+        details.doc-folder {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        details.doc-folder summary {
+            font-weight: bold;
+            cursor: pointer;
+            padding: 12px 15px;
+            color: #004a87;
+        }
+
+        .folder-content {
+            padding: 10px 20px 15px 25px;
+            background-color: #fafafa;
+        }
+
+        /* テーブル */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #004a87;
+            color: white;
+        }
+
+        tr:nth-child(even) { background-color: #f9f9f9; }
+
+        /* タブの初期非表示・表示制御 */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block !important;
+        }
+
+        /* ログインフォーム */
+        .login-card {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #004a87;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background-color: #003360;
+        }
+
+        .logout-btn {
+            padding: 8px 15px;
+            background-color: #e0e0e0;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .logout-btn:hover {
+            background-color: #d5d5d5;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 0.85rem;
+            text-align: left;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>社内ポータルサイト（テスト環境）</h1>
+</header>
+
+<div class="container">
+    <nav>
+        <ul>
+            <li><a href="javascript:void(0)" onclick="switchTab('home')" id="tab-home" class="active">🏠 ホーム・各種書類</a></li>
+            <li><a href="javascript:void(0)" onclick="switchTab('meeting')" id="tab-meeting">📅 会議室予約一覧</a></li>
+            <li><a href="javascript:void(0)" onclick="switchTab('employee')" id="tab-employee">👥 社員名簿</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div id="content-home" class="tab-content active">
+            <h2 class="section-title">お知らせ</h2>
+            <p>新しい書類検索AI（Dify）のテスト中です。会議室予約一覧の閲覧には社員番号「1111」でのログインが必要です。</p>
+            <div class="info-box">
+                <strong>💡 AIにこう聞いてみてください：</strong><br>
+                「2025年度の健康診断ガイドを見せて」「リモートワーク規定のURLは？」「旅費の経費精算マニュアルをちょうだい」
+            </div>
+
+            <h2 class="section-title">手動リンク（階層別リスト）</h2>
+            <details class="doc-folder">
+                <summary>📁 健康診断ガイド</summary>
+                <div class="folder-content">
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 2026年度 健康診断ガイド.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 2025年度 健康診断ガイド.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 2024年度 健康診断ガイド.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 2023年度 健康診断ガイド.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 2022年度 健康診断ガイド.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 2021年度 健康診断ガイド.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 2020年度 健康診断ガイド.pdf</a>
+                </div>
+            </details>
+
+            <details class="doc-folder">
+                <summary>📁 規定</summary>
+                <div class="folder-content">
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 リモートワーク勤務規定.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 就業規則.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 賃金規定.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 育児・介護休業規定.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 出張旅費規定.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 安全衛生規定.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 機密情報管理規定.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 個人情報保護規定.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 服装規定.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 福利厚生規定.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 副業・兼業規定.pdf</a>
+                </div>
+            </details>
+
+            <details class="doc-folder">
+                <summary>📁 マニュアル</summary>
+                <div class="folder-content">
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 経費精算マニュアル.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 PCセットアップマニュアル.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 会議室システム利用マニュアル.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 勤怠入力マニュアル.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 備品購入申請マニュアル.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 名刺発注マニュアル.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 セキュリティ対策マニュアル.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 災害時避難マニュアル.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 福利厚生申請マニュアル.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 出張申請マニュアル.pdf</a><br>
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="doc-link">📄 社内チャットツール利用マニュアル.pdf</a>
+                </div>
+            </details>
+        </div>
+
+        <div id="content-meeting" class="tab-content">
+            <div id="meeting-login-card" class="login-card">
+                <h3>🔒 セキュリティ認証</h3>
+                <p style="font-size: 0.9rem; color: #666; margin: 10px 0;">会議室予約状況を閲覧するには、社員番号を入力してください。</p>
+                <input type="password" id="employee-id-input" class="login-input" placeholder="社員番号 (1111)">
+                <div id="login-error" class="error-message">社員番号が正しくありません。</div>
+                <button onclick="attemptLogin()" class="login-btn">認証して閲覧する</button>
+            </div>
+
+            <div id="meeting-data-container" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 class="section-title" style="margin-bottom: 0;">会議室予約一覧（全30件）</h2>
+                    <button onclick="logout()" class="logout-btn">🔒 ログアウト</button>
+                </div>
+                <p>現在の各会議室の予約状況です。空き時間を確認の上、申請を行ってください。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>会議室</th>
+                            <th>予約日</th>
+                            <th>開始時間</th>
+                            <th>終了時間</th>
+                            <th>目的</th>
+                            <th>予約者</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr><td>小会議室</td><td>2026-05-11</td><td>12:00</td><td>13:00</td><td>社内研修</td><td>山口 敦子</td></tr>
+                    <tr><td>大会議室</td><td>2026-05-11</td><td>13:00</td><td>14:00</td><td>面接</td><td>伊藤 三郎</td></tr>
+                    <tr><td>応接室</td><td>2026-05-11</td><td>13:00</td><td>14:00</td><td>経営会議</td><td>田中 次郎</td></tr>
+                    <tr><td>大会議室</td><td>2026-05-11</td><td>14:00</td><td>16:00</td><td>定例ミーティング</td><td>山崎 貴志</td></tr>
+                    <tr><td>小会議室</td><td>2026-05-12</td><td>09:00</td><td>10:00</td><td>1on1面談</td><td>山崎 貴志</td></tr>
+                    <tr><td>大会議室</td><td>2026-05-12</td><td>10:00</td><td>12:00</td><td>経営会議</td><td>佐藤 太郎</td></tr>
+                    <tr><td>中会議室</td><td>2026-05-12</td><td>14:00</td><td>16:00</td><td>クライアント商談</td><td>渡辺 美紀</td></tr>
+                    <tr><td>大会議室</td><td>2026-05-13</td><td>11:00</td><td>13:00</td><td>システムレビュー</td><td>木村 拓哉</td></tr>
+                    <tr><td>中会議室</td><td>2026-05-13</td><td>16:00</td><td>18:00</td><td>企画ブレスト</td><td>山田 洋介</td></tr>
+                    <tr><td>応接室</td><td>2026-05-14</td><td>11:00</td><td>13:00</td><td>システムレビュー</td><td>加藤 恵</td></tr>
+                    <tr><td>小会議室</td><td>2026-05-14</td><td>15:00</td><td>17:00</td><td>キックオフ会議</td><td>小林 直樹</td></tr>
+                    <tr><td>小会議室</td><td>2026-05-15</td><td>09:00</td><td>10:00</td><td>プロジェクト進捗確認</td><td>清水 広大</td></tr>
+                    <tr><td>応接室</td><td>2026-05-15</td><td>15:00</td><td>16:00</td><td>1on1面談</td><td>山田 洋介</td></tr>
+                    <tr><td>中会議室</td><td>2026-05-16</td><td>09:00</td><td>11:00</td><td>キックオフ会議</td><td>渡辺 美紀</td></tr>
+                    <tr><td>小会議室</td><td>2026-05-16</td><td>09:00</td><td>11:00</td><td>経営会議</td><td>加藤 恵</td></tr>
+                    <tr><td>中会議室</td><td>2026-05-16</td><td>14:00</td><td>16:00</td><td>定例ミーティング</td><td>鈴木 一郎</td></tr>
+                    <tr><td>小会議室</td><td>2026-05-16</td><td>17:00</td><td>19:00</td><td>社内研修</td><td>加藤 恵</td></tr>
+                    <tr><td>中会議室</td><td>2026-05-17</td><td>11:00</td><td>13:00</td><td>プロジェクト進捗確認</td><td>山崎 貴志</td></tr>
+                    <tr><td>小会議室</td><td>2026-05-17</td><td>13:00</td><td>14:00</td><td>経営会議</td><td>林 寛子</td></tr>
+                    <tr><td>大会議室</td><td>2026-05-18</td><td>10:00</td><td>11:00</td><td>クライアント商談</td><td>山崎 貴志</td></tr>
+                    <tr><td>中会議室</td><td>2026-05-18</td><td>11:00</td><td>13:00</td><td>社内研修</td><td>山田 洋介</td></tr>
+                    <tr><td>応接室</td><td>2026-05-18</td><td>12:00</td><td>13:00</td><td>面接</td><td>林 寛子</td></tr>
+                    <tr><td>応接室</td><td>2026-05-18</td><td>14:00</td><td>15:00</td><td>1on1面談</td><td>山田 洋介</td></tr>
+                    <tr><td>中会議室</td><td>2026-05-19</td><td>10:00</td><td>12:00</td><td>クライアント商談</td><td>田中 次郎</td></tr>
+                    <tr><td>大会議室</td><td>2026-05-19</td><td>13:00</td><td>15:00</td><td>面接</td><td>高橋 花子</td></tr>
+                    <tr><td>応接室</td><td>2026-05-19</td><td>15:00</td><td>16:00</td><td>プロジェクト進捗確認</td><td>中村 健太</td></tr>
+                    <tr><td>小会議室</td><td>2026-05-20</td><td>13:00</td><td>14:00</td><td>面接</td><td>木村 拓哉</td></tr>
+                    <tr><td>中会議室</td><td>2026-05-20</td><td>14:00</td><td>15:00</td><td>プロジェクト進捗確認</td><td>高橋 花子</td></tr>
+                    <tr><td>応接室</td><td>2026-05-20</td><td>14:00</td><td>16:00</td><td>キックオフ会議</td><td>田中 次郎</td></tr>
+                    <tr><td>小会議室</td><td>2026-05-20</td><td>16:00</td><td>17:00</td><td>経営会議</td><td>清水 広大</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="content-employee" class="tab-content">
+            <h2 class="section-title">社員名簿（全60名）</h2>
+            <p>総務部、営業部、技術部に所属する社員の一覧です。</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>部署</th>
+                        <th>役職</th>
+                        <th>氏名</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr><td>総務部</td><td>部長</td><td>佐藤 太郎</td></tr>
+                <tr><td>総務部</td><td>課長</td><td>山田 洋介</td></tr>
+                <tr><td>総務部</td><td>課長</td><td>清水 広大</td></tr>
+                <tr><td>総務部</td><td>主任</td><td>小林 直樹</td></tr>
+                <tr><td>総務部</td><td>主任</td><td>佐々木 翼</td></tr>
+                <tr><td>総務部</td><td>主任</td><td>山下 結衣</td></tr>
+                <tr><td>総務部</td><td>主任</td><td>石川 明日香</td></tr>
+                <tr><td>総務部</td><td>一般</td><td>田中 太郎</td></tr>
+                <tr><td>総務部</td><td>一般</td><td>渡辺 健太</td></tr>
+                <tr><td>総務部</td><td>一般</td><td>加藤 雅人</td></tr>
+                <tr><td>総務部</td><td>一般</td><td>山口 一郎</td></tr>
+                <tr><td>総務部</td><td>一般</td><td>井上 由美</td></tr>
+                <tr><td>総務部</td><td>一般</td><td>林 千尋</td></tr>
+                <tr><td>総務部</td><td>一般</td><td>山崎 健太</td></tr>
+                <tr><td>総務部</td><td>一般</td><td>池田 大輔</td></tr>
+                <tr><td>総務部</td><td>一般</td><td>橋本 由美</td></tr>
+                <tr><td>総務部</td><td>一般</td><td>前田 翼</td></tr>
+                <tr><td>総務部</td><td>一般</td><td>藤田 陽子</td></tr>
+                <tr><td>総務部</td><td>一般</td><td>佐藤 直樹</td></tr>
+                <tr><td>総務部</td><td>一般</td><td>高橋 沙織</td></tr>
+                <tr><td>営業部</td><td>部長</td><td>鈴木 健</td></tr>
+                <tr><td>営業部</td><td>課長</td><td>伊藤 麻衣</td></tr>
+                <tr><td>営業部</td><td>課長</td><td>中村 美優</td></tr>
+                <tr><td>営業部</td><td>主任</td><td>吉田 一郎</td></tr>
+                <tr><td>営業部</td><td>主任</td><td>山口 健</td></tr>
+                <tr><td>営業部</td><td>主任</td><td>木村 陽子</td></tr>
+                <tr><td>営業部</td><td>主任</td><td>中島 沙織</td></tr>
+                <tr><td>営業部</td><td>一般</td><td>高橋 二郎</td></tr>
+                <tr><td>営業部</td><td>一般</td><td>山本 拓也</td></tr>
+                <tr><td>営業部</td><td>一般</td><td>吉田 亮</td></tr>
+                <tr><td>営業部</td><td>一般</td><td>松本 三郎</td></tr>
+                <tr><td>営業部</td><td>一般</td><td>木村 恵</td></tr>
+                <tr><td>営業部</td><td>一般</td><td>清水 結衣</td></tr>
+                <tr><td>営業部</td><td>一般</td><td>中島 健太</td></tr>
+                <tr><td>営業部</td><td>一般</td><td>阿部 拓也</td></tr>
+                <tr><td>営業部</td><td>一般</td><td>山下 誠</td></tr>
+                <tr><td>営業部</td><td>一般</td><td>森 誠</td></tr>
+                <tr><td>営業部</td><td>一般</td><td>前田 大輔</td></tr>
+                <tr><td>営業部</td><td>一般</td><td>小川 亮</td></tr>
+                <tr><td>営業部</td><td>一般</td><td>鈴木 千尋</td></tr>
+                <tr><td>技術部</td><td>部長</td><td>高橋 健太</td></tr>
+                <tr><td>技術部</td><td>課長</td><td>松本 直樹</td></tr>
+                <tr><td>技術部</td><td>課長</td><td>山崎 真一</td></tr>
+                <tr><td>技術部</td><td>主任</td><td>佐々木 恵</td></tr>
+                <tr><td>技術部</td><td>主任</td><td>井上 敦子</td></tr>
+                <tr><td>技術部</td><td>主任</td><td>池田 由美</td></tr>
+                <tr><td>技術部</td><td>主任</td><td>森 陽子</td></tr>
+                <tr><td>技術部</td><td>一般</td><td>伊藤 花子</td></tr>
+                <tr><td>技術部</td><td>一般</td><td>中村 美紀</td></tr>
+                <tr><td>技術部</td><td>一般</td><td>佐々木 誠</td></tr>
+                <tr><td>技術部</td><td>一般</td><td>松本 真央</td></tr>
+                <tr><td>技術部</td><td>一般</td><td>林 拓也</td></tr>
+                <tr><td>技術部</td><td>一般</td><td>山崎 結衣</td></tr>
+                <tr><td>技術部</td><td>一般</td><td>阿部 一郎</td></tr>
+                <tr><td>技術部</td><td>一般</td><td>池田 翔</td></tr>
+                <tr><td>技術部</td><td>一般</td><td>橋本 美優</td></tr>
+                <tr><td>技術部</td><td>一般</td><td>森 健</td></tr>
+                <tr><td>技術部</td><td>一般</td><td>石川 由美</td></tr>
+                <tr><td>技術部</td><td>一般</td><td>小川 大輔</td></tr>
+                <tr><td>技術部</td><td>一般</td><td>藤田 健</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<script>
+    // ログイン状態管理変数
+    let isLoggedIn = false;
+
+    // タブ切り替え制御用の関数
+    function switchTab(tabId) {
+        // 1. 全てのコンテンツ（ホーム、会議室、社員）の非表示化
+        const contents = document.querySelectorAll('.tab-content');
+        contents.forEach(content => {
+            content.classList.remove('active');
+        });
+
+        // 2. 全てのナビゲーションリンクの選択状態（active）を解除
+        const links = document.querySelectorAll('nav a');
+        links.forEach(link => {
+            link.classList.remove('active');
+        });
+
+        // 3. クリックされた対象だけを表示、およびアクティブ化
+        document.getElementById('content-' + tabId).classList.add('active');
+        document.getElementById('tab-' + tabId).classList.add('active');
+
+        // 4. 会議室予約タブが表示された場合、ログイン状態に合わせて表示を即座に更新
+        if (tabId === 'meeting') {
+            updateMeetingView();
+        }
+    }
+
+    // 会議室予約表示の制御（ログイン前後での出し分け）
+    function updateMeetingView() {
+        const loginCard = document.getElementById('meeting-login-card');
+        const dataContainer = document.getElementById('meeting-data-container');
+        const errorMsg = document.getElementById('login-error');
+
+        if (isLoggedIn) {
+            loginCard.style.display = 'none';
+            dataContainer.style.display = 'block';
+        } else {
+            loginCard.style.display = 'block';
+            dataContainer.style.display = 'none';
+            document.getElementById('employee-id-input').value = ''; // 入力をクリア
+            errorMsg.style.display = 'none';
+        }
+    }
+
+    // ログイン処理（「1111」の判定）
+    function attemptLogin() {
+        const inputVal = document.getElementById('employee-id-input').value.trim();
+        const errorMsg = document.getElementById('login-error');
+
+        if (inputVal === '1111') {
+            errorMsg.style.display = 'none';
+            isLoggedIn = true;
+            updateMeetingView();
+        } else {
+            errorMsg.style.display = 'block'; // 「1111」以外ならエラー
+        }
+    }
+
+    // ログアウト処理
+    function logout() {
+        isLoggedIn = false;
+        updateMeetingView();
+    }
+</script>
+
+</body>
+</html>
