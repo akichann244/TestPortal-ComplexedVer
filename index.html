@@ -231,7 +231,7 @@
     <main>
         <div id="content-home" class="tab-content active">
             <h2 class="section-title">お知らせ</h2>
-            <p>新しい書類検索AI（Dify）のテスト中です。会議室予約一覧の閲覧には社員番号「1111」でのログインが必要です。</p>
+            <p>新しい書類検索AI（Dify）のテスト中です。会議室予約一覧と社員名簿の閲覧には社員番号「1111」でのログインが必要です。</p>
             <div class="info-box">
                 <strong>💡 AIにこう聞いてみてください：</strong><br>
                 「2025年度の健康診断ガイドを見せて」「リモートワーク規定のURLは？」「旅費の経費精算マニュアルをちょうだい」
@@ -292,7 +292,7 @@
                 <p style="font-size: 0.9rem; color: #666; margin: 10px 0;">会議室予約状況を閲覧するには、社員番号を入力してください。</p>
                 <input type="password" id="employee-id-input" class="login-input" placeholder="社員番号 (1111)">
                 <div id="login-error" class="error-message">社員番号が正しくありません。</div>
-                <button onclick="attemptLogin()" class="login-btn">認証して閲覧する</button>
+                <button onclick="attemptLogin('meeting')" class="login-btn">認証して閲覧する</button>
             </div>
 
             <div id="meeting-data-container" style="display: none;">
@@ -348,85 +348,93 @@
             </div>
         </div>
 
-        //社員名簿
+        <div id="content-employee" class="tab-content">
+            <div id="employee-login-card" class="login-card">
+                <h3>🔒 セキュリティ認証</h3>
+                <p style="font-size: 0.9rem; color: #666; margin: 10px 0;">社員名簿を閲覧するには、社員番号を入力してください。</p>
+                <input type="password" id="employee-id-input-emp" class="login-input" placeholder="社員番号 (1111)">
+                <div id="login-error-emp" class="error-message">社員番号が正しくありません。</div>
+                <button onclick="attemptLogin('employee')" class="login-btn">認証して閲覧する</button>
+            </div>
 
-        <div id="employee-data-container" style="display: none;">
+            <div id="employee-data-container" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h2 class="section-title" style="margin-bottom: 0;">社員名簿（全60名）</h2>
                     <button onclick="logout()" class="logout-btn">🔒 ログアウト</button>
                 </div>
                 <p>総務部、営業部、技術部に所属する社員の一覧です。</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>部署</th>
-                        <th>役職</th>
-                        <th>氏名</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <tr><td>総務部</td><td>部長</td><td>佐藤 太郎</td></tr>
-                <tr><td>総務部</td><td>課長</td><td>山田 洋介</td></tr>
-                <tr><td>総務部</td><td>課長</td><td>清水 広大</td></tr>
-                <tr><td>総務部</td><td>主任</td><td>小林 直樹</td></tr>
-                <tr><td>総務部</td><td>主任</td><td>佐々木 翼</td></tr>
-                <tr><td>総務部</td><td>主任</td><td>山下 結衣</td></tr>
-                <tr><td>総務部</td><td>主任</td><td>石川 明日香</td></tr>
-                <tr><td>総務部</td><td>一般</td><td>田中 太郎</td></tr>
-                <tr><td>総務部</td><td>一般</td><td>渡辺 健太</td></tr>
-                <tr><td>総務部</td><td>一般</td><td>加藤 雅人</td></tr>
-                <tr><td>総務部</td><td>一般</td><td>山口 一郎</td></tr>
-                <tr><td>総務部</td><td>一般</td><td>井上 由美</td></tr>
-                <tr><td>総務部</td><td>一般</td><td>林 千尋</td></tr>
-                <tr><td>総務部</td><td>一般</td><td>山崎 健太</td></tr>
-                <tr><td>総務部</td><td>一般</td><td>池田 大輔</td></tr>
-                <tr><td>総務部</td><td>一般</td><td>橋本 由美</td></tr>
-                <tr><td>総務部</td><td>一般</td><td>前田 翼</td></tr>
-                <tr><td>総務部</td><td>一般</td><td>藤田 陽子</td></tr>
-                <tr><td>総務部</td><td>一般</td><td>佐藤 直樹</td></tr>
-                <tr><td>総務部</td><td>一般</td><td>高橋 沙織</td></tr>
-                <tr><td>営業部</td><td>部長</td><td>鈴木 健</td></tr>
-                <tr><td>営業部</td><td>課長</td><td>伊藤 麻衣</td></tr>
-                <tr><td>営業部</td><td>課長</td><td>中村 美優</td></tr>
-                <tr><td>営業部</td><td>主任</td><td>吉田 一郎</td></tr>
-                <tr><td>営業部</td><td>主任</td><td>山口 健</td></tr>
-                <tr><td>営業部</td><td>主任</td><td>木村 陽子</td></tr>
-                <tr><td>営業部</td><td>主任</td><td>中島 沙織</td></tr>
-                <tr><td>営業部</td><td>一般</td><td>高橋 二郎</td></tr>
-                <tr><td>営業部</td><td>一般</td><td>山本 拓也</td></tr>
-                <tr><td>営業部</td><td>一般</td><td>吉田 亮</td></tr>
-                <tr><td>営業部</td><td>一般</td><td>松本 三郎</td></tr>
-                <tr><td>営業部</td><td>一般</td><td>木村 恵</td></tr>
-                <tr><td>営業部</td><td>一般</td><td>清水 結衣</td></tr>
-                <tr><td>営業部</td><td>一般</td><td>中島 健太</td></tr>
-                <tr><td>営業部</td><td>一般</td><td>阿部 拓也</td></tr>
-                <tr><td>営業部</td><td>一般</td><td>山下 誠</td></tr>
-                <tr><td>営業部</td><td>一般</td><td>森 誠</td></tr>
-                <tr><td>営業部</td><td>一般</td><td>前田 大輔</td></tr>
-                <tr><td>営業部</td><td>一般</td><td>小川 亮</td></tr>
-                <tr><td>営業部</td><td>一般</td><td>鈴木 千尋</td></tr>
-                <tr><td>技術部</td><td>部長</td><td>高橋 健太</td></tr>
-                <tr><td>技術部</td><td>課長</td><td>松本 直樹</td></tr>
-                <tr><td>技術部</td><td>課長</td><td>山崎 真一</td></tr>
-                <tr><td>技術部</td><td>主任</td><td>佐々木 恵</td></tr>
-                <tr><td>技術部</td><td>主任</td><td>井上 敦子</td></tr>
-                <tr><td>技術部</td><td>主任</td><td>池田 由美</td></tr>
-                <tr><td>技術部</td><td>主任</td><td>森 陽子</td></tr>
-                <tr><td>技術部</td><td>一般</td><td>伊藤 花子</td></tr>
-                <tr><td>技術部</td><td>一般</td><td>中村 美紀</td></tr>
-                <tr><td>技術部</td><td>一般</td><td>佐々木 誠</td></tr>
-                <tr><td>技術部</td><td>一般</td><td>松本 真央</td></tr>
-                <tr><td>技術部</td><td>一般</td><td>林 拓也</td></tr>
-                <tr><td>技術部</td><td>一般</td><td>山崎 結衣</td></tr>
-                <tr><td>技術部</td><td>一般</td><td>阿部 一郎</td></tr>
-                <tr><td>技術部</td><td>一般</td><td>池田 翔</td></tr>
-                <tr><td>技術部</td><td>一般</td><td>橋本 美優</td></tr>
-                <tr><td>技術部</td><td>一般</td><td>森 健</td></tr>
-                <tr><td>技術部</td><td>一般</td><td>石川 由美</td></tr>
-                <tr><td>技術部</td><td>一般</td><td>小川 大輔</td></tr>
-                <tr><td>技術部</td><td>一般</td><td>藤田 健</td></tr>
-                </tbody>
-            </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>部署</th>
+                            <th>役職</th>
+                            <th>氏名</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr><td>総務部</td><td>部長</td><td>佐藤 太郎</td></tr>
+                    <tr><td>総務部</td><td>課長</td><td>山田 洋介</td></tr>
+                    <tr><td>総務部</td><td>課長</td><td>清水 広大</td></tr>
+                    <tr><td>総務部</td><td>主任</td><td>小林 直樹</td></tr>
+                    <tr><td>総務部</td><td>主任</td><td>佐々木 翼</td></tr>
+                    <tr><td>総務部</td><td>主任</td><td>山下 結衣</td></tr>
+                    <tr><td>総務部</td><td>主任</td><td>石川 明日香</td></tr>
+                    <tr><td>総務部</td><td>一般</td><td>田中 太郎</td></tr>
+                    <tr><td>総務部</td><td>一般</td><td>渡辺 健太</td></tr>
+                    <tr><td>総務部</td><td>一般</td><td>加藤 雅人</td></tr>
+                    <tr><td>総務部</td><td>一般</td><td>山口 一郎</td></tr>
+                    <tr><td>総務部</td><td>一般</td><td>井上 由美</td></tr>
+                    <tr><td>総務部</td><td>一般</td><td>林 千尋</td></tr>
+                    <tr><td>総務部</td><td>一般</td><td>山崎 健太</td></tr>
+                    <tr><td>総務部</td><td>一般</td><td>池田 大輔</td></tr>
+                    <tr><td>総務部</td><td>一般</td><td>橋本 由美</td></tr>
+                    <tr><td>総務部</td><td>一般</td><td>前田 翼</td></tr>
+                    <tr><td>総務部</td><td>一般</td><td>藤田 陽子</td></tr>
+                    <tr><td>総務部</td><td>一般</td><td>佐藤 直樹</td></tr>
+                    <tr><td>総務部</td><td>一般</td><td>高橋 沙織</td></tr>
+                    <tr><td>営業部</td><td>部長</td><td>鈴木 健</td></tr>
+                    <tr><td>営業部</td><td>課長</td><td>伊藤 麻衣</td></tr>
+                    <tr><td>営業部</td><td>課長</td><td>中村 美優</td></tr>
+                    <tr><td>営業部</td><td>主任</td><td>吉田 一郎</td></tr>
+                    <tr><td>営業部</td><td>主任</td><td>山口 健</td></tr>
+                    <tr><td>営業部</td><td>主任</td><td>木村 陽子</td></tr>
+                    <tr><td>営業部</td><td>主任</td><td>中島 沙織</td></tr>
+                    <tr><td>営業部</td><td>一般</td><td>高橋 二郎</td></tr>
+                    <tr><td>営業部</td><td>一般</td><td>山本 拓也</td></tr>
+                    <tr><td>営業部</td><td>一般</td><td>吉田 亮</td></tr>
+                    <tr><td>営業部</td><td>一般</td><td>松本 三郎</td></tr>
+                    <tr><td>営業部</td><td>一般</td><td>木村 恵</td></tr>
+                    <tr><td>営業部</td><td>一般</td><td>清水 結衣</td></tr>
+                    <tr><td>営業部</td><td>一般</td><td>中島 健太</td></tr>
+                    <tr><td>営業部</td><td>一般</td><td>阿部 拓也</td></tr>
+                    <tr><td>営業部</td><td>一般</td><td>山下 誠</td></tr>
+                    <tr><td>営業部</td><td>一般</td><td>森 誠</td></tr>
+                    <tr><td>営業部</td><td>一般</td><td>前田 大輔</td></tr>
+                    <tr><td>営業部</td><td>一般</td><td>小川 亮</td></tr>
+                    <tr><td>営業部</td><td>一般</td><td>鈴木 千尋</td></tr>
+                    <tr><td>技術部</td><td>部長</td><td>高橋 健太</td></tr>
+                    <tr><td>技術部</td><td>課長</td><td>松本 直樹</td></tr>
+                    <tr><td>技術部</td><td>課長</td><td>山崎 真一</td></tr>
+                    <tr><td>技術部</td><td>主任</td><td>佐々木 恵</td></tr>
+                    <tr><td>技術部</td><td>主任</td><td>井上 敦子</td></tr>
+                    <tr><td>技術部</td><td>主任</td><td>池田 由美</td></tr>
+                    <tr><td>技術部</td><td>主任</td><td>森 陽子</td></tr>
+                    <tr><td>技術部</td><td>一般</td><td>伊藤 花子</td></tr>
+                    <tr><td>技術部</td><td>一般</td><td>中村 美紀</td></tr>
+                    <tr><td>技術部</td><td>一般</td><td>佐々木 誠</td></tr>
+                    <tr><td>技術部</td><td>一般</td><td>松本 真央</td></tr>
+                    <tr><td>技術部</td><td>一般</td><td>林 拓也</td></tr>
+                    <tr><td>技術部</td><td>一般</td><td>山崎 結衣</td></tr>
+                    <tr><td>技術部</td><td>一般</td><td>阿部 一郎</td></tr>
+                    <tr><td>技術部</td><td>一般</td><td>池田 翔</td></tr>
+                    <tr><td>技術部</td><td>一般</td><td>橋本 美優</td></tr>
+                    <tr><td>技術部</td><td>一般</td><td>森 健</td></tr>
+                    <tr><td>技術部</td><td>一般</td><td>石川 由美</td></tr>
+                    <tr><td>技術部</td><td>一般</td><td>小川 大輔</td></tr>
+                    <tr><td>技術部</td><td>一般</td><td>藤田 健</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
 </div>
@@ -453,9 +461,12 @@
         document.getElementById('content-' + tabId).classList.add('active');
         document.getElementById('tab-' + tabId).classList.add('active');
 
-        // 4. 会議室予約タブが表示された場合、ログイン状態に合わせて表示を即座に更新
+        // 4. 会議室予約・社員名簿タブが表示された場合、ログイン状態に合わせて表示を即座に更新
         if (tabId === 'meeting') {
             updateMeetingView();
+        }
+        if (tabId === 'employee') {
+            updateEmployeeView();
         }
     }
 
@@ -476,30 +487,57 @@
         }
     }
 
-    // ログイン処理（「1111」の判定）
-    function attemptLogin() {
-        const inputVal = document.getElementById('employee-id-input').value.trim();
-        const errorMsg = document.getElementById('login-error');
+    // 【追加】社員名簿表示の制御（ログイン前後での出し分け）
+    function updateEmployeeView() {
+        const loginCard = document.getElementById('employee-login-card');
+        const dataContainer = document.getElementById('employee-data-container');
+        const errorMsg = document.getElementById('login-error-emp');
+
+        if (isLoggedIn) {
+            loginCard.style.display = 'none';
+            dataContainer.style.display = 'block';
+        } else {
+            loginCard.style.display = 'block';
+            dataContainer.style.display = 'none';
+            document.getElementById('employee-id-input-emp').value = ''; // 入力をクリア
+            errorMsg.style.display = 'none';
+        }
+    }
+
+    // 【修正】ログイン処理（「1111」の判定を統合・共通化）
+    function attemptLogin(type) {
+        let inputId, errorId;
+        if (type === 'meeting') {
+            inputId = 'employee-id-input';
+            errorId = 'login-error';
+        } else if (type === 'employee') {
+            inputId = 'employee-id-input-emp';
+            errorId = 'login-error-emp';
+        }
+
+        const inputVal = document.getElementById(inputId).value.trim();
+        const errorMsg = document.getElementById(errorId);
 
         if (inputVal === '1111') {
             errorMsg.style.display = 'none';
             isLoggedIn = true;
+            // ログイン状態を共有し、両方のタブ表示を即時更新する
             updateMeetingView();
+            updateEmployeeView();
         } else {
             errorMsg.style.display = 'block'; // 「1111」以外ならエラー
         }
     }
 
-    // ログアウト処理
+    // 【修正】ログアウト処理（両方の表示を同時にリセットするよう変更）
     function logout() {
         isLoggedIn = false;
         updateMeetingView();
+        updateEmployeeView();
     }
 </script>
 
-//ここからchatbot
-
-    <script>
+ <script>
  window.difyChatbotConfig = {
   token: '5ilIsbTqSMkdbldq',
   inputs: {
@@ -532,6 +570,5 @@
     height: 40rem !important;
   }
 </style>
-    
 </body>
 </html>
