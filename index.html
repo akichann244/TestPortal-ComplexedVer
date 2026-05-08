@@ -348,9 +348,14 @@
             </div>
         </div>
 
-        <div id="content-employee" class="tab-content">
-            <h2 class="section-title">社員名簿（全60名）</h2>
-            <p>総務部、営業部、技術部に所属する社員の一覧です。</p>
+        //社員名簿
+
+        <div id="employee-data-container" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 class="section-title" style="margin-bottom: 0;">社員名簿（全60名）</h2>
+                    <button onclick="logout()" class="logout-btn">🔒 ログアウト</button>
+                </div>
+                <p>総務部、営業部、技術部に所属する社員の一覧です。</p>
             <table>
                 <thead>
                     <tr>
