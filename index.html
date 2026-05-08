@@ -581,6 +581,20 @@
     height: 40rem !important;
   }
 </style>
-    
+
+
+    <script>
+        // --- 既存のコード（switchTabやattemptLoginなど）がここにあります ---
+
+        // ★ここに以下のコードを追記してください★
+        window.addEventListener('load', () => {
+            // ページ読み込み時にチャットの会話履歴（キャッシュ）を全削除する
+            localStorage.clear();
+            sessionStorage.clear();
+            console.log("セッションキャッシュをクリアしました");
+        });
+        // ★ここまで★
+
+    </script>
 </body>
 </html>
