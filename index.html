@@ -440,39 +440,6 @@
 </div>
 
 <script>
-
-    (function() {
-    try {
-        // Difyの会話継続に関わるキーだけを狙い撃ちして削除
-        const targetKeys = [
-            'dify-conversation-id',
-            'dify-user-token',
-            'dify-access-token',
-            'dify_conversation_id',
-            'conversation_id'
-        ];
-
-        targetKeys.forEach(key => {
-            localStorage.removeItem(key);
-            sessionStorage.removeItem(key);
-        });
-
-        // 「dify」という名前が含まれるが、config（設定）ではないデータも消す
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.includes('dify') && !key.includes('config')) {
-                localStorage.removeItem(key);
-            }
-        }
-
-        console.warn("--- Dify会話セッションのみをリセットしました ---");
-    } catch (e) {
-        console.error("リセット中にエラー:", e);
-    }
-})();
-
-
-    
     // ログイン状態を各タブで独立して管理
     let isMeetingLoggedIn = false;
     let isEmployeeLoggedIn = false;
@@ -578,40 +545,6 @@
         updateMeetingView();
         updateEmployeeView();
     }
-
 </script>
-<script>
- window.difyChatbotConfig = {
-  token: '5ilIsbTqSMkdbldq',
-  inputs: {
-    // You can define the inputs from the Start node here
-    // key is the variable name
-    // e.g.
-    // name: "NAME"
-  },
-  systemVariables: {
-    // user_id: 'YOU CAN DEFINE USER ID HERE',
-    // conversation_id: 'YOU CAN DEFINE CONVERSATION ID HERE, IT MUST BE A VALID UUID',
-  },
-  userVariables: {
-    // avatar_url: 'YOU CAN DEFINE USER AVATAR URL HERE',
-    // name: 'YOU CAN DEFINE USER NAME HERE',
-  },
- }
-</script>
-<script
- src="https://udify.app/embed.min.js"
- id="5ilIsbTqSMkdbldq"
- defer>
-</script>
-<style>
-  #dify-chatbot-bubble-button {
-    background-color: #1C64F2 !important;
-  }
-  #dify-chatbot-bubble-window {
-    width: 24rem !important;
-    height: 40rem !important;
-  }
-</style>
 </body>
 </html>
