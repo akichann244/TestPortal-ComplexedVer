@@ -440,6 +440,26 @@
 </div>
 
 <script>
+
+    // 1. ページ読み込みを待たずに即実行する（最優先）
+(function() {
+    try {
+        // ストレージを全消去
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // クッキーを全消去（念のため）
+        document.cookie.split(";").forEach(function(c) {
+            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+
+        // コンソールに強制的に出力（これで見えるはずです）
+        console.warn("--- セッション強制リセット完了 ---");
+    } catch (e) {
+        console.error("クリア中にエラーが発生:", e);
+    }
+})();
+    
     // ログイン状態を各タブで独立して管理
     let isMeetingLoggedIn = false;
     let isEmployeeLoggedIn = false;
@@ -545,16 +565,7 @@
         updateMeetingView();
         updateEmployeeView();
     }
-// ページが読み込まれた（またはリフレッシュされた）瞬間に実行
-window.addEventListener('load', () => {
-    // Difyなどの一般的なチャットボットが保存するキーを狙い撃ちして削除
-    // ※ツールによってキー名が異なるため、一旦localStorage全体をクリアするのが最も確実です
-    localStorage.clear(); 
-    sessionStorage.clear();
-    
-    console.log("チャットボットのセッションキャッシュを完全にクリアしました。");
-});
-</script>
+
 
 <script>
  window.difyChatbotConfig = {
