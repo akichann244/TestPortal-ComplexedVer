@@ -440,37 +440,6 @@
 </div>
 
 <script>
-
-  (function() {
-    try {
-        // Difyの会話継続に関わるキーだけを狙い撃ちして削除
-        const targetKeys = [
-            'dify-conversation-id',
-            'dify-user-token',
-            'dify-access-token',
-            'dify_conversation_id',
-            'conversation_id'
-        ];
-
-        targetKeys.forEach(key => {
-            localStorage.removeItem(key);
-            sessionStorage.removeItem(key);
-        });
-
-        // 「dify」という名前が含まれるが、config（設定）ではないデータも消す
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.includes('dify') && !key.includes('config')) {
-                localStorage.removeItem(key);
-            }
-        }
-
-        console.warn("--- Dify会話セッションのみをリセットしました ---");
-    } catch (e) {
-        console.error("リセット中にエラー:", e);
-    }
-})();
-    // ここまで
     
     // ログイン状態を各タブで独立して管理
     let isMeetingLoggedIn = false;
