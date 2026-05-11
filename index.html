@@ -440,6 +440,29 @@
 </div>
 
 <script>
+
+    // ==========================================
+    // ★★★ ここにサイト全体用のパスワードを設定してください ★★★
+    // ==========================================
+    const SITE_PASSWORD = "benrinachatbot";
+
+    // サイト全体のログイン処理
+    function attemptSiteLogin() {
+        const inputField = document.getElementById('site-password-input');
+        const errorMsg = document.getElementById('site-login-error');
+        const inputVal = inputField ? inputField.value.trim() : '';
+
+        if (inputVal === SITE_PASSWORD) {
+            // パスワードが合っていれば、オーバーレイを消して本体を表示する
+            document.getElementById('site-login-overlay').style.display = 'none';
+            document.getElementById('main-site-content').style.display = 'block';
+        } else {
+            // 間違っていればエラーメッセージを表示
+            if (errorMsg) errorMsg.style.display = 'block';
+        }
+    }
+    // ==========================================
+    
     // ログイン状態を各タブで独立して管理
     let isMeetingLoggedIn = false;
     let isEmployeeLoggedIn = false;
